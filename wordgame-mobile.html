@@ -36,7 +36,7 @@
 			/*top: 0%;*/
 			/*height: 3em;*/
 			height: auto;
-			z-index: 1;
+			z-index: 2;
 		}
 		.footer
 		{
@@ -58,6 +58,7 @@
 		#wordlist > li
 		{
 			position: relative;
+			height: 0em;
 		}
 		.highlight
 		{
@@ -115,6 +116,9 @@
 			min-height: 0em;
 			overflow: hidden;
 			background-color: blue;
+			color: white;
+			text-shadow: none;
+			z-index: 1;
 		}
 	</style>
 	<script src="wordgame.js" type="text/javascript"></script>
@@ -140,17 +144,22 @@
 		{
 			if(show)
 			{
-				$("#messageWord").text(word ? word : "");
+				$("#messageWord").text(word ? word.toUpperCase() : "");
 				$("#messageError").css('display', word ? 'block' : 'none');
 				$("#messageDetail").text(text ? text : "");
 				if(messageShown)
 				{
-					window.cancelTimeout(messageTimeout);
+					window.clearTimeout(messageTimeout);
 				}
 				messageTimeout = window.setTimeout(function(){gameMessage(false)}, 2000);
+				messageShown = true;
+			}
+			else
+			{
+				messageShown = false;
 			}
 			console.log("animating");
-			$("#message").animate({height: (show ? "3em" : "0em")}, 250);
+			$("#message").animate({"height": (show ? "3em" : "0em"), "top": (show ? "0em" : "-3em")}, 250);
 		}
 		function message(word, text, add, end)
 		{
@@ -164,7 +173,7 @@
 				}
 				else
 				{
-					$("#nextword").children().removeClass("highlight");
+					$("#nextword").children().children().removeClass("highlight");
 				}
 				if(text)
 				{
@@ -202,7 +211,7 @@
 			newWord = $("<li/>").text(word.toUpperCase()).css("visibility", "visible");
 			$("#wordlist").append(newWord);
 			$("#wordlist").listview("refresh");
-			newWord.css("height", "0em").animate({"height": "2em"});
+			newWord.animate({"height": "2em"});
 			$("#scroll").prop("scrollTop", $("#wordlist").height());
 		}
 		function timer(time)
@@ -268,7 +277,9 @@
 	</script>
 </head> 
 <body> 
-
+<!--<div data-role="page" class="page" id="title">
+	<div data-role="header"
+</div>-->
 <div data-role="page" class="page" id="game">
 
 	<div data-role="header" class="header">
@@ -285,13 +296,13 @@
 				Length: <span id="length">16</span>
 			</div>
 		</div>
+	</div><!-- /header -->
+
+	<div data-role="content" id="content">
 		<h3 id="message">
 			<div id="messageError">Couldn't add the word <span id="messageWord"></span>:</div>
 			<div id="messageDetail"></div>
 		</h3>
-	</div><!-- /header -->
-
-	<div data-role="content" id="content">
 		<div id="scroll">
 			<ul data-role="listview" id="wordlist">
 			</ul>
